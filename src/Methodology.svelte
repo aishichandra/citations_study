@@ -417,7 +417,7 @@
     border-top: 1px solid #dedede;
     color: inherit;
     font: inherit;
-    font-size: .9em;
+    font-size: .8em;
     line-height: 1.4;
     text-align: left;
   }
