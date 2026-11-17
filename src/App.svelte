@@ -25,15 +25,21 @@
   ]
   const figureBase = `${import.meta.env.BASE_URL}graphics/article-figures/`
   const studyTable = 'https://airtable.com/embed/appg737s82fePQorq/shrSYddgl1MYeaxOH'
-  const licensingFigure = licensingGraphic.replace('src="graph5-artboard-1.png', `src="${import.meta.env.BASE_URL}graphics/licensing-deals/graph5-artboard-1.png`)
-  const citationFigure = citationGraphic.replaceAll('src="graph4-lg.png', `src="${import.meta.env.BASE_URL}graphics/citation-links/graph4-lg.png`)
-  const crawlerFigure = crawlerGraphic.replace('src="graph3-artboard-1.png', `src="${import.meta.env.BASE_URL}graphics/crawler-access/graph3-artboard-1.png`)
-  const premiumFigure = premiumGraphic.replace('src="graph2-artboard-1.png', `src="${import.meta.env.BASE_URL}graphics/premium-models/graph2-artboard-1.png`)
-  const findingsFigure = findingsGraphic.replaceAll('src="graphs-copy-', `src="${import.meta.env.BASE_URL}graphics/confidently-wrong/graphs-copy-`)
+  const charts = [
+    { after: 'Overall, the chatbots often failed to retrieve the correct articles.', folder: 'confidently-wrong', label: 'Generative search tools were often confidently wrong in our study', html: findingsGraphic },
+    { after: 'Premium models, such as Perplexity Pro', folder: 'premium-models', className: 'premium-graphic', label: 'Response comparison for Perplexity and Grok models', html: premiumGraphic },
+    { after: 'We expected chatbots', folder: 'crawler-access', label: 'Crawler access and response accuracy', html: crawlerGraphic },
+    { after: citationFinding + '.', folder: 'citation-links', className: 'citation-graphic', label: 'Types of links cited by generative search tools', html: citationGraphic },
+    { after: 'A deal between AI companies and publishers often involves', folder: 'licensing-deals', className: 'licensing-graphic', label: 'Accuracy for AI platforms and publishers with licensing deals', html: licensingGraphic }
+  ].map(chart => ({
+    ...chart,
+    html: chart.html.replace(/src="([^"/]+\.png(?:\?[^"]*)?)"/g, (_, file) =>
+      `src="${import.meta.env.BASE_URL}graphics/${chart.folder}/${file}"`)
+  }))
 
   const original = 'https://www.cjr.org/tow_center/we-compared-eight-ai-search-engines-theyre-all-bad-at-citing-news.php'
   const originalPublisher = 'Columbia Journalism Review'
-  const paragraphs = article.split('## About the Tow Center')[0].trim().split(/\r?\n(?:[ \t]*\r?\n)+/)
+  const paragraphs = article.trim().split(/\r?\n(?:[ \t]*\r?\n)+/)
   const methodStart = paragraphs.indexOf('## Methodology')
   const methodEnd = paragraphs.findIndex((paragraph, index) => index > methodStart && paragraph.startsWith('## '))
   const articleParagraphs = paragraphs.filter((_, index) => index <= methodStart || index >= methodEnd)
@@ -64,15 +70,14 @@
     </Headline>
 
     <Body>
-      {#if original && originalPublisher}
-        <aside class="republication" aria-label="Republication credit">
-          <p>This article is republished from <cite>{originalPublisher}</cite>.</p>
-          <a href={original}>Read the original article</a>
-        </aside>
-      {/if}
+      <aside class="republication" aria-label="Republication credit">
+        <p>This article is republished from <cite>{originalPublisher}</cite>.</p>
+        <a href={original}>Read the original article</a>
+      </aside>
 
       {#each articleParagraphs as paragraph, index}
         {@const figure = articleFigures.find(item => paragraph.startsWith(item.caption))}
+        {@const chart = charts.find(item => paragraph.startsWith(item.after))}
         {#if index === methodStart}
           <h2 id={'section-' + (sections.indexOf(paragraph) + 1)}>Methodology</h2>
           <Methodology paragraphs={paragraphs.slice(methodStart + 1, methodEnd)} />
@@ -104,25 +109,9 @@
           {:else}
             <BodyText text={paragraph} />
           {/if}
-          {#if paragraph.startsWith('Overall, the chatbots often failed to retrieve the correct articles.')}
-            <figure class="findings-graphic" aria-label="Generative search tools were often confidently wrong in our study">
-              {@html findingsFigure}
-            </figure>
-          {:else if paragraph.startsWith('Premium models, such as Perplexity Pro')}
-            <figure class="findings-graphic premium-graphic" aria-label="Response comparison for Perplexity and Grok models">
-              {@html premiumFigure}
-            </figure>
-          {:else if paragraph.startsWith('We expected chatbots')}
-            <figure class="findings-graphic" aria-label="Crawler access and response accuracy">
-              {@html crawlerFigure}
-            </figure>
-          {:else if paragraph.startsWith(citationFinding + '.')}
-            <figure class="findings-graphic citation-graphic" aria-label="Types of links cited by generative search tools">
-              {@html citationFigure}
-            </figure>
-          {:else if paragraph.startsWith('A deal between AI companies and publishers often involves')}
-            <figure class="findings-graphic licensing-graphic" aria-label="Accuracy for AI platforms and publishers with licensing deals">
-              {@html licensingFigure}
+          {#if chart}
+            <figure class={['findings-graphic', chart.className]} aria-label={chart.label}>
+              {@html chart.html}
             </figure>
           {:else if paragraph.startsWith('When we asked whether the AI companies made any commitments')}
             <div class="study-table">
