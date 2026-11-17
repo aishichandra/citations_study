@@ -1,7 +1,6 @@
 <script>
   import Article from './cjr/Article.svelte'
   import Body from './cjr/Body.svelte'
-  import Methodology from './Methodology.svelte'
   import BodyText from './cjr/BodyText.svelte'
   import Header from './cjr/Header.svelte'
   import Footer from './cjr/Footer.svelte'
@@ -40,9 +39,6 @@
   const original = 'https://www.cjr.org/tow_center/we-compared-eight-ai-search-engines-theyre-all-bad-at-citing-news.php'
   const originalPublisher = 'Columbia Journalism Review'
   const paragraphs = article.trim().split(/\r?\n(?:[ \t]*\r?\n)+/)
-  const methodStart = paragraphs.indexOf('## Methodology')
-  const methodEnd = paragraphs.findIndex((paragraph, index) => index > methodStart && paragraph.startsWith('## '))
-  const articleParagraphs = paragraphs.filter((_, index) => index <= methodStart || index >= methodEnd)
   const sections = paragraphs.filter(paragraph => paragraph.startsWith('## '))
 </script>
 
@@ -75,13 +71,10 @@
         <a href={original}>Read the original article</a>
       </aside>
 
-      {#each articleParagraphs as paragraph, index}
+      {#each paragraphs as paragraph, index}
         {@const figure = articleFigures.find(item => paragraph.startsWith(item.caption))}
         {@const chart = charts.find(item => paragraph.startsWith(item.after))}
-        {#if index === methodStart}
-          <h2 id={'section-' + (sections.indexOf(paragraph) + 1)}>Methodology</h2>
-          <Methodology paragraphs={paragraphs.slice(methodStart + 1, methodEnd)} />
-        {:else if paragraph === '## Download our data'}
+        {#if paragraph === '## Download our data'}
           <h2 id={'section-' + (sections.indexOf(paragraph) + 1)}>Download our data</h2>
           <p><a href="https://github.com/TowCenter/genSearch-Part2">Download the study dataset and read the access instructions on GitHub</a>.</p>
         {:else if paragraph.startsWith('## ')}
