@@ -1,0 +1,193 @@
+<script>
+  import Article from './cjr/Article.svelte'
+  import Body from './cjr/Body.svelte'
+  import Methodology from './Methodology.svelte'
+  import BodyText from './cjr/BodyText.svelte'
+  import Header from './cjr/Header.svelte'
+  import Footer from './cjr/Footer.svelte'
+  import TowAbout from './cjr/TowAbout.svelte'
+  import TowPartnerLogo from './cjr/TowPartnerLogo.svelte'
+  import Headline from './cjr/Headline.svelte'
+  import './cjr/tow.css'
+  import article from './article.txt?raw'
+  import licensingGraphic from './licensing-deals.html?raw'
+  import citationGraphic from './citation-links.html?raw'
+  import crawlerGraphic from './crawler-findings.html?raw'
+  import premiumGraphic from './premium-models.html?raw'
+  import findingsGraphic from './confidently-wrong.html?raw'
+
+  const citationFinding = 'The generative search tools we tested had a common tendency to cite the wrong article'
+  const articleFigures = [
+    { caption: 'An example of Copilot declining', file: 'copilot-decline.jpg', width: 1486, height: 1292 },
+    { caption: 'An example of Gemini declining', file: 'gemini-politics.jpg', width: 1680, height: 1146 },
+    { caption: 'Despite having a partnership with the Texas Tribune, Perplexity cited an unofficial version', file: 'perplexity-tribune.jpg', width: 1988, height: 988 },
+    { caption: 'Although USA Today blocks ChatGPT’s crawler', file: 'chatgpt-yahoo.jpg', width: 1248, height: 1108 }
+  ]
+  const figureBase = `${import.meta.env.BASE_URL}graphics/article-figures/`
+  const studyTable = 'https://airtable.com/embed/appg737s82fePQorq/shrSYddgl1MYeaxOH'
+  const licensingFigure = licensingGraphic.replace('src="graph5-artboard-1.png', `src="${import.meta.env.BASE_URL}graphics/licensing-deals/graph5-artboard-1.png`)
+  const citationFigure = citationGraphic.replaceAll('src="graph4-lg.png', `src="${import.meta.env.BASE_URL}graphics/citation-links/graph4-lg.png`)
+  const crawlerFigure = crawlerGraphic.replace('src="graph3-artboard-1.png', `src="${import.meta.env.BASE_URL}graphics/crawler-access/graph3-artboard-1.png`)
+  const premiumFigure = premiumGraphic.replace('src="graph2-artboard-1.png', `src="${import.meta.env.BASE_URL}graphics/premium-models/graph2-artboard-1.png`)
+  const findingsFigure = findingsGraphic.replaceAll('src="graphs-copy-', `src="${import.meta.env.BASE_URL}graphics/confidently-wrong/graphs-copy-`)
+
+  const original = 'https://www.cjr.org/tow_center/we-compared-eight-ai-search-engines-theyre-all-bad-at-citing-news.php'
+  const originalPublisher = 'Columbia Journalism Review'
+  const paragraphs = article.split('## About the Tow Center')[0].trim().split(/\r?\n(?:[ \t]*\r?\n)+/)
+  const methodStart = paragraphs.indexOf('## Methodology')
+  const methodEnd = paragraphs.findIndex((paragraph, index) => index > methodStart && paragraph.startsWith('## '))
+  const articleParagraphs = paragraphs.filter((_, index) => index <= methodStart || index >= methodEnd)
+  const sections = paragraphs.filter(paragraph => paragraph.startsWith('## '))
+</script>
+
+<Header />
+
+<main id="article">
+  <Article>
+    <Headline
+      hed="AI Search Has a Citation Problem"
+      subhed="We compared eight AI search engines. They’re all bad at citing news."
+      date="March 6, 2025"
+      datetime="2025-03-06"
+    >
+      <TowPartnerLogo />
+      {#snippet byline()}
+        <a rel="author" href="https://www.cjr.org/author/klaudia-jazwinska">Klaudia Jaźwińska</a> and
+        <a rel="author" href="https://www.cjr.org/author/aisvarya-chandrasekar">Aisvarya Chandrasekar</a>
+      {/snippet}
+      {#snippet hero()}
+        <figure class="image-hero-box">
+          <img class="image-hero" src={figureBase + 'article-hero.jpg'} width="1600" height="704" alt="Static on a broken television screen" />
+          <figcaption class="image-hero-caption">Image: The rack of a broken monitor or TV is the texture of a television screen, background for superimposing with the effect of grain noise, Александр Розов. Adobe Stock 1050902471</figcaption>
+        </figure>
+      {/snippet}
+    </Headline>
+
+    <Body>
+      {#if original && originalPublisher}
+        <aside class="republication" aria-label="Republication credit">
+          <p>This article is republished from <cite>{originalPublisher}</cite>.</p>
+          <a href={original}>Read the original article</a>
+        </aside>
+      {/if}
+
+      {#each articleParagraphs as paragraph, index}
+        {@const figure = articleFigures.find(item => paragraph.startsWith(item.caption))}
+        {#if index === methodStart}
+          <h2 id={'section-' + (sections.indexOf(paragraph) + 1)}>Methodology</h2>
+          <Methodology paragraphs={paragraphs.slice(methodStart + 1, methodEnd)} />
+        {:else if paragraph === '## Download our data'}
+          <h2 id={'section-' + (sections.indexOf(paragraph) + 1)}>Download our data</h2>
+          <p><a href="https://github.com/TowCenter/genSearch-Part2">Download the study dataset and read the access instructions on GitHub</a>.</p>
+        {:else if paragraph.startsWith('## ')}
+          <h2 id={'section-' + (sections.indexOf(paragraph) + 1)}>{paragraph.slice(3)}</h2>
+        {:else if paragraph.startsWith('### ')}
+          <h3>{paragraph.slice(4)}</h3>
+        {:else if paragraph.startsWith('- ')}
+          <ul>
+            {#each paragraph.split(/\r?\n/) as item}
+              <li>{item.slice(2)}</li>
+            {/each}
+          </ul>
+        {:else if figure}
+          <figure class="article-figure">
+            <img src={figureBase + figure.file} width={figure.width} height={figure.height} loading="lazy" alt="" />
+            <figcaption>{paragraph}</figcaption>
+          </figure>
+        {:else if paragraph === 'Kaylee Williams, Sarah Grevy Gotfredsen, and Dhrumil Mehta contributed to this report.'}
+          <p><em>{paragraph}</em></p>
+        {:else if index === 0}
+          <p class="lead-paragraph">{paragraph}</p>
+        {:else}
+          {#if paragraph.startsWith(citationFinding)}
+            <p><strong>{citationFinding}</strong>{paragraph.slice(citationFinding.length)}</p>
+          {:else}
+            <BodyText text={paragraph} />
+          {/if}
+          {#if paragraph.startsWith('Overall, the chatbots often failed to retrieve the correct articles.')}
+            <figure class="findings-graphic" aria-label="Generative search tools were often confidently wrong in our study">
+              {@html findingsFigure}
+            </figure>
+          {:else if paragraph.startsWith('Premium models, such as Perplexity Pro')}
+            <figure class="findings-graphic premium-graphic" aria-label="Response comparison for Perplexity and Grok models">
+              {@html premiumFigure}
+            </figure>
+          {:else if paragraph.startsWith('We expected chatbots')}
+            <figure class="findings-graphic" aria-label="Crawler access and response accuracy">
+              {@html crawlerFigure}
+            </figure>
+          {:else if paragraph.startsWith(citationFinding + '.')}
+            <figure class="findings-graphic citation-graphic" aria-label="Types of links cited by generative search tools">
+              {@html citationFigure}
+            </figure>
+          {:else if paragraph.startsWith('A deal between AI companies and publishers often involves')}
+            <figure class="findings-graphic licensing-graphic" aria-label="Accuracy for AI platforms and publishers with licensing deals">
+              {@html licensingFigure}
+            </figure>
+          {:else if paragraph.startsWith('When we asked whether the AI companies made any commitments')}
+            <div class="study-table">
+              <iframe title="Tow Center study data table" src={studyTable} loading="lazy"></iframe>
+              <p><a href={studyTable}>Open the study data table in Airtable</a></p>
+            </div>
+          {/if}
+        {/if}
+      {/each}
+
+
+    </Body>
+    <TowAbout />
+  </Article>
+</main>
+
+<Footer />
+
+<style>
+
+
+  .findings-graphic {
+    position: relative;
+    left: 50%;
+    width: min(94vw, 930px);
+    margin: 0 0 2rem;
+    transform: translateX(-50%);
+  }
+  .citation-graphic { width: min(94vw, 804px); }
+  .premium-graphic, .licensing-graphic { width: min(94vw, 595px); }
+  .article-figure, .study-table { margin: 1rem 0 1.75rem; }
+  .article-figure img { display: block; width: 100%; height: auto; }
+  .article-figure figcaption, .study-table p { margin: .45rem 0 0; padding: 0; border: 0; color: #526278; font: .85rem/1.4 system-ui, sans-serif; }
+  .study-table iframe { display: block; width: 100%; height: 33rem; border: 1px solid #ddd; }
+
+  main :global(.entry-content > :is(p, ul, h2, h3)) {
+    padding: 0 0 28px;
+    border-left: 0;
+  }
+
+  .lead-paragraph::first-letter {
+    float: left;
+    font-size: 3.5em;
+    line-height: 0.85;
+    margin: 0.08em 0.09em 0 0;
+  }
+
+  .republication a {
+    color: #254c6f;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  h2[id] {
+    scroll-margin-top: 1.5rem;
+  }
+
+  .republication {
+    margin: 0 0 1.5rem;
+    border-bottom: 1px solid #d5d5d5;
+    padding-bottom: .75rem;
+    font: 0.9375rem/1.5 system-ui, sans-serif;
+  }
+
+  .republication p {
+    margin: 0 0 0.25rem;
+  }
+</style>

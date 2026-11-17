@@ -1,0 +1,343 @@
+/* =============================================================================
+   CJR / Tow Center Design System — supplemental stylesheet
+
+   The three main CJR theme files are loaded via <link> in Head.svelte:
+     1. main-styles-2022.css   — fonts, header, nav, article body, footer
+     2. styles_single_2024.css — single-article extras (TOC, capsules, embeds)
+     3. styles_single_TOW_addon_2024.css — Tow blue color overrides
+
+   This file handles only what those files can't:
+     A. @font-face with absolute URLs (CJR files use relative paths that
+        only resolve on cjr.org — these serve as a reliable fallback)
+     B. Container-width corrections (Bootstrap overwrites CJR's values)
+     C. Bootstrap-specific resets
+     D. Any component rules not present in the CJR theme
+   ============================================================================= */
+
+
+/* === A. Fonts (absolute URLs — fallback for local dev) ==================== */
+
+@font-face {
+    font-family: 'Lyon Display Web';
+    src: url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/LyonDisplay-MediumItalic-Web.woff2') format('woff2'),
+         url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/LyonDisplay-MediumItalic-Web.woff') format('woff');
+    font-weight: 500;
+    font-style: italic;
+    font-stretch: normal;
+}
+
+@font-face {
+    font-family: 'Lyon Display Web';
+    src: url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/LyonDisplay-Medium-Web.woff2') format('woff2'),
+         url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/LyonDisplay-Medium-Web.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+}
+
+@font-face {
+    font-family: 'Lyon Text Web';
+    src: url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/LyonText-RegularNo2-Web.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+}
+
+@font-face {
+    font-family: 'Lyon Text Web';
+    src: url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/LyonText-RegularNo2Italic-Web.woff') format('woff');
+    font-weight: 400;
+    font-style: italic;
+    font-stretch: normal;
+}
+
+@font-face {
+    font-family: 'Lyon Text Web';
+    src: url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/LyonText-Bold-Web.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-stretch: normal;
+}
+
+@font-face {
+    font-family: 'Lyon Text Web';
+    src: url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/LyonText-BoldItalic-Web.woff') format('woff');
+    font-weight: 700;
+    font-style: italic;
+    font-stretch: normal;
+}
+
+@font-face {
+    font-family: 'Graphik Web';
+    src: url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/Graphik-Regular-Web.woff2') format('woff2'),
+         url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/Graphik-Regular-Web.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+}
+
+@font-face {
+    font-family: 'Graphik Web';
+    src: url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/Graphik-RegularItalic-Web.woff2') format('woff2'),
+         url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/Graphik-RegularItalic-Web.woff') format('woff');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Graphik Web';
+    src: url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/Graphik-Bold-Web.woff2') format('woff2'),
+         url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/Graphik-Bold-Web.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-stretch: normal;
+}
+
+@font-face {
+    font-family: 'Graphik Web';
+    src: url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/Graphik-BoldItalic-Web.woff2') format('woff2'),
+         url('https://www.cjr.org/wp-content/themes/cjr2017/_resources2015/fonts/commercial-type-1502-AFHEEU-web/Graphik-BoldItalic-Web.woff') format('woff');
+    font-weight: 700;
+    font-style: italic;
+}
+
+
+/* === B. Container widths (restore CJR values that Bootstrap overwrites) === */
+/*
+ * main-styles-2022.css sets .container-lg to 900px and .container-xl to 1024px.
+ * Bootstrap 5 (loaded after) resets these to its own breakpoint values (~960px / ~1140px).
+ * Re-assert CJR's values here since this file loads last.
+ */
+
+.top-nav-1.container-lg {
+    max-width: 900px !important;
+}
+
+
+/* === C. Bootstrap resets =================================================== */
+
+/* Bootstrap adds padding to .container-* via --bs-gutter-x.
+   CJR's nav uses negative margins that assume 0 horizontal padding.
+   Use explicit padding (not --bs-gutter-x) so the reset doesn't inherit
+   down to nested containers like the nav dropdown or article row. */
+.top-nav-box.container-fluid,
+.top-nav-1.container-lg {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Bootstrap resets nav list padding */
+.cjr-main-menu__list,
+.cjr-menu-inline,
+.cjr-nav__second-menu {
+    padding-left: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Bootstrap button padding/border */
+button.cjr-header__hamburger {
+    display: inline-flex !important;
+    width: 24px !important;
+    height: 24px !important;
+    padding: 10px 0 0 0 !important;
+    border: none !important;
+    line-height: 1 !important;
+    background: none !important;
+    margin-left: auto;
+}
+
+button.cjr-header__hamburger:focus {
+    outline: 0;
+}
+
+/* Bootstrap vertical-align: middle on images causes 4px gaps */
+img.cjr-header-logo-image {
+    vertical-align: top;
+}
+
+
+/* === D. Component rules not in the CJR theme files ======================== */
+
+/* Header layout — these inline styles from the live page are not in any
+   of the three linked CSS files, only in per-page inline <style> blocks */
+
+.desktop-nav-container {
+    position: relative;
+    z-index: 100;
+}
+
+.mobile-nav-container {
+    display: none;
+}
+
+.top-nav-box {
+    border-bottom: 1px solid #999;
+    box-shadow: none;
+}
+
+.top-nav-1 {
+    padding: 0 !important;
+}
+
+.cjr-header-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-links {
+    display: flex;
+    align-items: center;
+}
+
+.cjr-header-link {
+    font-family: 'Graphik Web', Helvetica, sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #000;
+    text-decoration: none;
+}
+
+/* Hamburger lines — drawn via CSS pseudo-elements */
+.cjr-header__hamburger .cjr-header__hamburger-lines {
+    position: relative;
+}
+
+.cjr-header__hamburger .cjr-header__hamburger-lines,
+.cjr-header__hamburger .cjr-header__hamburger-lines::before,
+.cjr-header__hamburger .cjr-header__hamburger-lines::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: #222;
+}
+
+.cjr-header__hamburger .cjr-header__hamburger-lines::before,
+.cjr-header__hamburger .cjr-header__hamburger-lines::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    transform-origin: 1.78571px center;
+}
+
+.cjr-header__hamburger .cjr-header__hamburger-lines::before { top: 6.33333px; }
+.cjr-header__hamburger .cjr-header__hamburger-lines::after  { top: -6.33333px; }
+
+/* Hamburger active state — show close icon, hide lines */
+.cjr-header__hamburger.is-active {
+    z-index: 200;
+    background: #fff url("https://cjr.org/wp-content/themes/cjr2017/_resources2015/images/global/close-icon-3-lg.jpg") no-repeat center !important;
+    background-size: 24px 24px !important;
+    display: grid;
+}
+
+.cjr-header__hamburger-lines.is-active {
+    overflow: hidden;
+    position: relative;
+    top: -100px;
+}
+
+/* Logo wrap — dimensions from live page inline styles */
+.cjr-header-logo-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 860px;
+    margin: 0 20px;
+    pointer-events: auto;
+}
+
+img.cjr-header-logo-image {
+    display: block;
+    max-width: 100% !important;
+    height: auto;
+    margin: 0 0 42px 0;
+}
+
+/* Join Now button — margin from live CJR inline styles */
+.cjr-header-donate {
+    margin: 0 24px !important;
+}
+
+img.cjr-button-donate {
+    width: 72px !important;
+    height: auto;
+    vertical-align: top;
+    margin: 0 !important;
+}
+
+/* Nav dropdown — overrides main-styles-2022.css with values from CJR homepage inline styles */
+/* Negative margins omitted: live CJR uses them to bleed past a full-width header, but our
+   header is inside a 900px container-lg so they'd push the nav off-screen */
+.cjr-nav {
+    padding: 21px 64px;
+    border-top: none;
+    background: #FAFAFA;
+    box-shadow: 0px 6px 6px 0px rgba(0, 0, 0, 0.25);
+}
+
+/* Mobile overrides */
+@media screen and (max-width: 929px) {
+    .desktop-nav-container {
+        display: none;
+    }
+
+    .mobile-nav-container {
+        display: block;
+    }
+
+    img.cjr-logo-mobile {
+        display: block;
+        width: 50%;
+        max-width: 110px;
+        height: auto;
+        margin-left: 15px;
+    }
+
+    .cjr-header-donate {
+        margin: 2px 20px 0 0 !important;
+    }
+
+    img.cjr-button-donate {
+        width: 108px !important;
+        margin: 0 !important;
+    }
+
+    button.cjr-header__hamburger {
+        width: 30px !important;
+        height: 30px !important;
+        padding: 13px 0 0 0 !important;
+    }
+
+    .cjr-header__hamburger .cjr-header__hamburger-lines,
+    .cjr-header__hamburger .cjr-header__hamburger-lines::before,
+    .cjr-header__hamburger .cjr-header__hamburger-lines::after {
+        width: 30px;
+    }
+
+    .cjr-header__hamburger .cjr-header__hamburger-lines::before { top: 8.33333px; }
+    .cjr-header__hamburger .cjr-header__hamburger-lines::after  { top: -8.33333px; }
+
+    .cjr-header__hamburger.is-active {
+        background-size: 36px 36px !important;
+    }
+
+    .cjr-nav {
+        margin-left: 0;
+        margin-right: 0;
+        max-width: unset;
+        padding: 21px 1rem 0 1rem;
+        box-shadow: none;
+        border-bottom: 1px solid #999;
+        border-top: 1px solid #999;
+    }
+}
+
+/* Footer logo — HTML width="440" forces 440px on mobile without this */
+#footer .logo img {
+    max-width: 100%;
+    height: auto;
+}
