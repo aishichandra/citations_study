@@ -121,8 +121,8 @@
             <BodyText text={paragraph} />
           {/if}
           {#if paragraph.startsWith('After providing each chatbot')}
-            <figure class="article-figure findings-graphic">
-              <img width="1999" height="983" src={figureBase + 'query-example.png'} alt="An excerpt from the query grid is enlarged to show the prompt and a sample response with its headline, publisher, date, and URL highlighted." loading="lazy" />
+            <figure class="article-figure query-figure">
+              <img width="1492" height="733" src={figureBase + 'query-example.png'} alt="An excerpt from the query grid is enlarged to show the prompt and a sample response with its headline, publisher, date, and URL highlighted." loading="lazy" />
             </figure>
           {:else if chart}
             <figure class={['findings-graphic', chart.className]} aria-label={chart.label}>
@@ -158,7 +158,22 @@
     text-align: center;
     font: .8rem/1.25 ui-monospace, monospace;
   }
-  .grading-key li { margin: 0; padding: 0; list-style: none; }
+  main .grading-key li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font: inherit;
+    overflow-wrap: anywhere;
+  }
+  main :global(.entry-content > p):has(+ .query-figure) { padding-bottom: .5rem; }
+  .article-figure.query-figure {
+    position: relative;
+    left: 50%;
+    width: min(792px, 88vw);
+    max-width: none;
+    margin: 0 0 .5rem;
+    transform: translateX(-50%);
+  }
   .grading-key span {
     display: grid;
     place-items: center;
