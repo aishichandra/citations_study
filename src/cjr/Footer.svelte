@@ -1,9 +1,6 @@
 <footer id="footer">
 		<div id="footer-inner">
 			<div class="logo">
-                <a href="https://www.cjr.org/" rel="home">
-                    <img src={import.meta.env.BASE_URL + 'graphics/cjr/cjr-logo-horizontal-footer-1100.png'} alt="Columbia Journalism Review" width="440" height="25" />
-                </a>
 				<p>The voice of journalism, since 1961</p>
 			</div>
 			<div class="lists">

@@ -2,7 +2,6 @@
   import Article from './cjr/Article.svelte'
   import Body from './cjr/Body.svelte'
   import BodyText from './cjr/BodyText.svelte'
-  import Header from './cjr/Header.svelte'
   import Footer from './cjr/Footer.svelte'
   import TowAbout from './cjr/TowAbout.svelte'
   import TowPartnerLogo from './cjr/TowPartnerLogo.svelte'
@@ -41,8 +40,6 @@
   const paragraphs = article.trim().split(/\r?\n(?:[ \t]*\r?\n)+/)
   const sections = paragraphs.filter(paragraph => paragraph.startsWith('## '))
 </script>
-
-<Header />
 
 <main id="article">
   <Article>
@@ -87,6 +84,11 @@
               <li>{item.slice(2)}</li>
             {/each}
           </ul>
+          {#if paragraph.startsWith('- Correct:')}
+            <figure class="article-figure">
+              <img src={figureBase + 'grading-key.png'} alt="Grading key: green for completely correct, light green for correct but incomplete, pink for partially incorrect, red for completely incorrect, gray for no answer, and a blue square with an X for crawler blocked." loading="lazy" />
+            </figure>
+          {/if}
         {:else if figure}
           <figure class="article-figure">
             <img src={figureBase + figure.file} width={figure.width} height={figure.height} loading="lazy" alt="" />
@@ -102,7 +104,11 @@
           {:else}
             <BodyText text={paragraph} />
           {/if}
-          {#if chart}
+          {#if paragraph.startsWith('After providing each chatbot')}
+            <figure class="article-figure">
+              <img src={figureBase + 'query-example.png'} alt="An excerpt from the query grid is enlarged to show the prompt and a sample response with its headline, publisher, date, and URL highlighted." loading="lazy" />
+            </figure>
+          {:else if chart}
             <figure class={['findings-graphic', chart.className]} aria-label={chart.label}>
               {@html chart.html}
             </figure>
