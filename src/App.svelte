@@ -2,8 +2,6 @@
   import Article from './cjr/Article.svelte'
   import Body from './cjr/Body.svelte'
   import BodyText from './cjr/BodyText.svelte'
-  import Footer from './cjr/Footer.svelte'
-  import TowAbout from './cjr/TowAbout.svelte'
   import TowPartnerLogo from './cjr/TowPartnerLogo.svelte'
   import Headline from './cjr/Headline.svelte'
   import './cjr/tow.css'
@@ -138,12 +136,13 @@
       {/each}
 
 
+      <aside class="republication" aria-label="Republication source">
+        <p>This article is republished from <cite>{originalPublisher}</cite>.</p>
+        <a href={original}>Read the original article</a>
+      </aside>
     </Body>
-    <TowAbout />
   </Article>
 </main>
-
-<Footer />
 
 <style>
 
