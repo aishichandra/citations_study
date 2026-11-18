@@ -105,8 +105,8 @@
             <BodyText text={paragraph} />
           {/if}
           {#if paragraph.startsWith('After providing each chatbot')}
-            <figure class="article-figure">
-              <img src={figureBase + 'query-example.png'} alt="An excerpt from the query grid is enlarged to show the prompt and a sample response with its headline, publisher, date, and URL highlighted." loading="lazy" />
+            <figure class="article-figure findings-graphic">
+              <img width="1999" height="983" src={figureBase + 'query-example.png'} alt="An excerpt from the query grid is enlarged to show the prompt and a sample response with its headline, publisher, date, and URL highlighted." loading="lazy" />
             </figure>
           {:else if chart}
             <figure class={['findings-graphic', chart.className]} aria-label={chart.label}>
