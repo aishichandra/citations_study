@@ -14,6 +14,15 @@
   import premiumGraphic from './premium-models.html?raw'
   import findingsGraphic from './confidently-wrong.html?raw'
 
+  const gradingKey = [
+    ['Completely Correct', '#88bf78'],
+    ['Correct but Incomplete', '#b5d9ad'],
+    ['Partially Incorrect', '#f5b4b9'],
+    ['Completely Incorrect', '#f78e94'],
+    ['No Answer Provided', '#dce0df'],
+    ['Crawler Blocked', '#d2dfef']
+  ]
+
   const citationFinding = 'The generative search tools we tested had a common tendency to cite the wrong article'
   const articleFigures = [
     { caption: 'An example of Copilot declining', file: 'copilot-decline.jpg', width: 1486, height: 1292 },
@@ -85,9 +94,16 @@
             {/each}
           </ul>
           {#if paragraph.startsWith('- Correct:')}
-            <figure class="article-figure">
-              <img src={figureBase + 'grading-key.png'} alt="Grading key: green for completely correct, light green for correct but incomplete, pink for partially incorrect, red for completely incorrect, gray for no answer, and a blue square with an X for crawler blocked." loading="lazy" />
-            </figure>
+            <ul class="grading-key" aria-label="Response grading key">
+              {#each gradingKey as [label, color]}
+                <li>
+                  <span class:blocked={label === 'Crawler Blocked'} style:background={color} aria-hidden="true">
+                    {label === 'Crawler Blocked' ? '×' : ''}
+                  </span>
+                  {label}
+                </li>
+              {/each}
+            </ul>
           {/if}
         {:else if figure}
           <figure class="article-figure">
@@ -131,6 +147,31 @@
 
 <style>
 
+
+  main :global(.entry-content > ul).grading-key {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: .75rem;
+    padding: 0;
+    margin: 1.25rem 0 1.75rem;
+    list-style: none;
+    text-align: center;
+    font: .8rem/1.25 ui-monospace, monospace;
+  }
+  .grading-key li { margin: 0; padding: 0; list-style: none; }
+  .grading-key span {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0 auto .5rem;
+    color: white;
+    font: 2rem/1 system-ui, sans-serif;
+  }
+  .grading-key .blocked { border: 1px dashed #222; }
+  @media (max-width: 600px) {
+    main :global(.entry-content > ul).grading-key { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
 
   .findings-graphic {
     position: relative;
